@@ -1,0 +1,15 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+Scheduler -> ConfigurationManager: scanConfiguration()
+ConfigurationManager --> "Système de fichier": read file
+ConfigurationManager -> ConfigurationManager: create configuration object
+
+ConfigurationManager -> Network: disconnect()
+ConfigurationManager -> Network: connect(configuration)
+ConfigurationManager -> NotificationBar: displayHostname(configuration.getHostname())
+ConfigurationManager -> Supervision:hostChanged(configuration.getHostname())
+ConfigurationManager -> Supervision:loginChanged(configuration.getLogin())
+@enduml

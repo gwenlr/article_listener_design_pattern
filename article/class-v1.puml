@@ -1,0 +1,16 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class ConfigurationManager
+class Network
+class Configuration{
+   String hostname
+   int port
+   String login
+   String password
+}
+
+ConfigurationManager ..> Configuration
+Network ..> Configuration
+
+@enduml

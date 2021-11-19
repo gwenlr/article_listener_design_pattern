@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Producer {
+    +addListener(listener : Listener) : void
+    +removeListener(listener : Listener) : void
+    -fireChangeToListeners() : void
+}
+
+interface Listener {
+    +onChange(data:Data) : void
+}
+
+class ConsumerClass1
+class ConsumerClass2
+class ConsumerClass3
+
+
+Producer o-- Listener : listeners
+Listener <|-- ConsumerClass1
+Listener <|-- ConsumerClass2
+Listener <|-- ConsumerClass3
+
+@enduml

@@ -4,38 +4,36 @@
 
 ## Avant-propos
 Cet article et le code l'accompagnant ont pour objectif de faire découvrir et comprendre le design pattern listener.
-Ce design pattern, à l'usage très courant, est à connaître absolument.
+Ce design pattern est d'usage très courant et se trouve vraiment partout, même dans les librairies de base de Java.
 
 L'approche de cet article consiste à partir d'un exemple concret, où un problème est identifié, d'aboutir à la 
 re-découverte du design pattern listener.
 
 Le code qui illustre l'article est accessible via github. 
-Il se concentre sur la problématique traité et implémente uniquement les fonctionnalités nécessaires à la compréhension 
+Il se concentre sur la problématique traitée et implémente uniquement les fonctionnalités nécessaires à la compréhension 
 de l'article.
 
 
 ## V1 : le début de la mauvaise pente
-Durant le développement d'une application de type client riche en Java, il est demandé de gérer une connexion à un 
-serveur.
+Durant le développement d'une application de type client riche (ie. des IHMs sans le techno web), il est demandé de gérer
+une connexion à un serveur.
 Il est décidé de placer les paramètres de configuration de la connexion dans un fichier de configuration.
 Ce fichier est lu par une instance de **ConfigurationManager**.
 Le contenu du fichier de configuration est placé dans une instance de **Configuration**, un JavaBean.
 Puis cet objet est transmis à l'instance de type **Network** afin d'établir la connexion au serveur.
 
+![Diagramme de séquence v1](images/sequence-v1.png)
+
 D'un point de vue conception, les dépendances entre les classes sont :
 * **Configuration** n'a aucune dépendance,
 * **Network** dépend de **Configuration**,
-* **ConfigurationManager** dépend de **Network** et de **Configuration**.
+* **ConfigurationManager** dépend de **Configuration**.
 
-La dernière dépendance, entre **ConfigurationManager** et **Network**, introduit un couplage fort entre ces deux 
-notions, qui sont pourtant distinctes.
-Ainsi, quand la classe **Network** évoluera, la classe **ConfigurationManager** sera à recompiler.
-Pour l'instant, ce n'est pas important, mais si dans le futur le code de l'application s'étoffe suffisamment, il
-pourrait être utile de découper l'application entre différentes librairies (Fichiers JAR).
-Cette dépendance obligera à mettre dans la même librairie le code de gestion de la configuration et celui de la gestion
-des échanges réseau.
+![Diagramme de classe v1](images/class-v1.png)
 
-Nous n'en sommes pas là, le code pourra être refactorisé le moment venu.
+Ainsi les couplages forts sont cohérents et les couplages entre objets métiers distincts sont lâches.
+Ce qui est très bien.
+
 
 
 
@@ -50,7 +48,25 @@ Cette méthode, exécutée régulièrement, va vérifier l'état du fichier de c
 l'instance de **Network** de se reconnecter au serveur avec les paramètres de la nouvelle configuration (rôle de la 
 méthode **fireConfigurationChange()**).
 
-Les dépendances restent les mêmes et aucune refactorisation n'est nécessaire à court terme.
+![Diagramme de séquence v2](images/sequence-v2.png)
+
+D'un point de vue conception, les dépendances entre les classes sont :
+* **Configuration** n'a aucune dépendance,
+* **Network** dépend de **Configuration**,
+* **ConfigurationManager** dépend de **Network** et de **Configuration**.
+
+![Diagramme de classe v2](images/class-v2.png)
+
+
+La dernière dépendance, entre **ConfigurationManager** et **Network**, introduit un couplage fort entre ces deux
+notions, qui sont pourtant distinctes.
+Ainsi, quand la classe **Network** évoluera, la classe **ConfigurationManager** sera à recompiler.
+Pour l'instant, ce n'est pas important, mais si dans le futur le code de l'application s'étoffe suffisamment, il
+pourrait être utile de découper l'application entre différentes librairies (Fichiers JAR).
+Cette dépendance obligera à mettre dans la même librairie le code de gestion de la configuration et celui de la gestion
+des échanges réseau.
+
+Nous n'en sommes pas là, le code pourra être refactorisé le moment venu.
 
 
 
@@ -61,6 +77,13 @@ La gestion de cette barre de status est implémentée dans la classe **StatusBar
 
 Cette évolution est simple, il suffit d'ajouter un setter de **StatusBar** à la classe **ConfigurationManager** et 
 d'appeler la méthode adéquate lorsque le fichier de configuration est mise à jour.
+
+![Diagramme de séquence v3](images/sequence-v3.png)
+
+
+![Diagramme de classe v3](images/class-v3.png)
+
+
 
 Alors, tout est bien dans le meilleur des mondes ?
 Pas tout à fait, car une dépendance a été ajoutée à la classe **ConfigurationManager** et celle-ci dépend à présent 
@@ -75,6 +98,12 @@ Ces dépendances inadéquates risquent de poser un problème à terme.
 Une nouvelle évolution demandée est de pouvoir suivre au travers de la supervision les changements du nom du serveur et
 du login de l'utilisateur.
 La supervision est gérée par la classe **Supervision**.
+
+![Diagramme de séquence v4](images/sequence-v4.png)
+
+
+![Diagramme de classe v4](images/class-v4.png)
+
 
 L'implémentation de cette évolution est effectuée comme précédemment, par l'ajout d'une méthode setter à la classe
 **ConfigurationManager** et l'ajout d'appels à **Supervision** dans la méthode **fireConfigurationChange()**.
@@ -261,6 +290,10 @@ Ce refactoring permet de résoudre le point 4.
 Finalement, les 4 points identifiés au début du chapitre sont résolus, l'objectif du refactoring est atteint.
 Et surtout, cela rend heureux l'architecte logiciel, ce qui est toujours une bonne chose... 
 
+![Diagramme de séquence v5](images/sequence-v5.png)
+
+
+![Diagramme de classe v5](images/class-v5.png)
 
 
 ## V6 : un dernier refactoring pour la route
@@ -328,7 +361,7 @@ Ainsi les bénéfices du refactoring constitant à introduire le design-pattern 
 
 D'un point de vue UML, cela donne :
 
-![Diagramme de classe](images/class-diagram.png)
+![Diagramme de classe](images/class-listener-design.png)
 
 
 Ce design-pattern se retrouve également dans les librairies Java:

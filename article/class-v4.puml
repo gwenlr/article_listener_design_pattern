@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class ConfigurationManager
+class Configuration 
+class Network
+class NotificationBar
+class Supervision
+
+ConfigurationManager ..> Configuration
+Network ..> Configuration
+
+ConfigurationManager ..> Network
+ConfigurationManager ..> NotificationBar
+ConfigurationManager ..> Supervision
+
+@enduml
