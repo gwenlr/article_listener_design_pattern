@@ -19,8 +19,13 @@ public class ApplicationLauncher {
     public void startup() {
         // Implementation...
         Configuration configuration = configurationManager.getConfiguration();
+
         network.startup(configuration);
+
         statusBar.displayHostname(configuration.getHostname());
+
+        supervision.hostChanged(configuration.getHostname());
+        supervision.loginChanged(configuration.getLogin());
         // Implementation...
     }
 

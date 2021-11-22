@@ -45,8 +45,10 @@ public class ConfigurationManager {
             network.disconnect();
             network.connect(configuration);
         }
+
         if (statusBar != null)
             statusBar.displayHostname(configuration.getHostname());
+
         if( supervision != null) {
             supervision.hostChanged(configuration.getHostname());
             supervision.loginChanged(configuration.getLogin());
